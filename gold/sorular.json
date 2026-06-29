@@ -1,0 +1,42 @@
+[
+  {
+    "soru": "bugün hangi ürün en çok satıldı?",
+    "gold_sql": "SELECT u.ad AS urun, SUM(s.adet) AS toplam_adet FROM satislar s JOIN urunler u ON u.id = s.urun_id WHERE s.tarih = CURRENT_DATE GROUP BY u.ad ORDER BY toplam_adet DESC LIMIT 10",
+    "tip": "agregasyon+tarih"
+  },
+  {
+    "soru": "bu ayın toplam cirosu nedir?",
+    "gold_sql": "SELECT SUM(s.toplam_tutar) AS toplam_ciro FROM satislar s WHERE date_trunc('month', s.tarih) = date_trunc('month', CURRENT_DATE)",
+    "tip": "tek_deger+tarih"
+  },
+  {
+    "soru": "şehir bazında toplam satış adedi nedir?",
+    "gold_sql": "SELECT m.sehir, SUM(s.adet) AS toplam_adet FROM satislar s JOIN magazalar m ON m.id = s.magaza_id GROUP BY m.sehir ORDER BY toplam_adet DESC",
+    "tip": "join+gruplama"
+  },
+  {
+    "soru": "en çok ciro yapan 5 ürün hangisi?",
+    "gold_sql": "SELECT u.ad AS urun, SUM(s.toplam_tutar) AS ciro FROM satislar s JOIN urunler u ON u.id = s.urun_id GROUP BY u.ad ORDER BY ciro DESC LIMIT 5",
+    "tip": "siralama+limit"
+  },
+  {
+    "soru": "kategori bazında kaç adet ürün satıldı?",
+    "gold_sql": "SELECT k.ad AS kategori, SUM(s.adet) AS toplam_adet FROM satislar s JOIN urunler u ON u.id = s.urun_id JOIN kategoriler k ON k.id = u.kategori_id GROUP BY k.ad ORDER BY toplam_adet DESC",
+    "tip": "coklu_join"
+  },
+  {
+    "soru": "Antalya şubesinde en çok satılan içecek nedir?",
+    "gold_sql": "SELECT u.ad AS urun, SUM(s.adet) AS toplam_adet FROM satislar s JOIN urunler u ON u.id = s.urun_id JOIN kategoriler k ON k.id = u.kategori_id JOIN magazalar m ON m.id = s.magaza_id WHERE m.sehir = 'Antalya' AND k.ad = 'İçecek' GROUP BY u.ad ORDER BY toplam_adet DESC LIMIT 1",
+    "tip": "filtre+coklu_join"
+  },
+  {
+    "soru": "hangi markanın toplam cirosu en yüksek?",
+    "gold_sql": "SELECT u.marka, SUM(s.toplam_tutar) AS ciro FROM satislar s JOIN urunler u ON u.id = s.urun_id GROUP BY u.marka ORDER BY ciro DESC LIMIT 1",
+    "tip": "siralama"
+  },
+  {
+    "soru": "ortalama satış tutarı (sepet) nedir?",
+    "gold_sql": "SELECT AVG(s.toplam_tutar) AS ortalama_tutar FROM satislar s",
+    "tip": "agregasyon"
+  }
+]

@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Ortam değişkenleri / sırlar
+.env
+*.env
+
+# Loglar
+logs/
+*.log
+
+# ChromaDB yerel veri deposu
+chroma_db/
+*.sqlite3
+
+# Editör / OS
+.DS_Store
+.idea/
+.vscode/

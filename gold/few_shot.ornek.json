@@ -1,0 +1,17 @@
+[
+  {
+    "soru": "bugün hangi ürün en çok satıldı?",
+    "sql": "SELECT u.ad AS urun, SUM(s.adet) AS toplam_adet FROM satislar s JOIN urunler u ON u.id = s.urun_id WHERE s.tarih::date = CURRENT_DATE GROUP BY u.ad ORDER BY toplam_adet DESC LIMIT 10",
+    "tablolar": ["satislar", "urunler"]
+  },
+  {
+    "soru": "hangi mağazada hangi ürün en çok satılıyor?",
+    "sql": "SELECT m.ad AS magaza, u.ad AS urun, SUM(s.adet) AS toplam_adet FROM satislar s JOIN urunler u ON u.id = s.urun_id JOIN magazalar m ON m.id = s.magaza_id GROUP BY m.ad, u.ad ORDER BY toplam_adet DESC LIMIT 20",
+    "tablolar": ["satislar", "urunler", "magazalar"]
+  },
+  {
+    "soru": "bu ay toplam ciro ne kadar?",
+    "sql": "SELECT SUM(s.adet * s.birim_fiyat) AS toplam_ciro FROM satislar s WHERE date_trunc('month', s.tarih) = date_trunc('month', CURRENT_DATE)",
+    "tablolar": ["satislar"]
+  }
+]

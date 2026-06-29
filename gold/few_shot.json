@@ -1,0 +1,82 @@
+[
+  {
+    "soru": "bugün hangi ürün en çok satıldı?",
+    "sql": "SELECT u.ad AS urun, SUM(s.adet) AS toplam_adet FROM satislar s JOIN urunler u ON u.id = s.urun_id WHERE s.tarih = CURRENT_DATE GROUP BY u.ad ORDER BY toplam_adet DESC LIMIT 10",
+    "tablolar": ["satislar", "urunler"]
+  },
+  {
+    "soru": "hangi mağazada hangi ürün en çok satılıyor?",
+    "sql": "SELECT m.ad AS magaza, u.ad AS urun, SUM(s.adet) AS toplam_adet FROM satislar s JOIN urunler u ON u.id = s.urun_id JOIN magazalar m ON m.id = s.magaza_id GROUP BY m.ad, u.ad ORDER BY toplam_adet DESC LIMIT 20",
+    "tablolar": ["satislar", "urunler", "magazalar"]
+  },
+  {
+    "soru": "bu ay toplam ciro ne kadar?",
+    "sql": "SELECT SUM(s.toplam_tutar) AS toplam_ciro FROM satislar s WHERE date_trunc('month', s.tarih) = date_trunc('month', CURRENT_DATE)",
+    "tablolar": ["satislar"]
+  },
+  {
+    "soru": "şehir bazında toplam satış adedi nedir?",
+    "sql": "SELECT m.sehir, SUM(s.adet) AS toplam_adet FROM satislar s JOIN magazalar m ON m.id = s.magaza_id GROUP BY m.sehir ORDER BY toplam_adet DESC",
+    "tablolar": ["satislar", "magazalar"]
+  },
+  {
+    "soru": "en çok ciro yapan 5 ürün hangisi?",
+    "sql": "SELECT u.ad AS urun, SUM(s.toplam_tutar) AS ciro FROM satislar s JOIN urunler u ON u.id = s.urun_id GROUP BY u.ad ORDER BY ciro DESC LIMIT 5",
+    "tablolar": ["satislar", "urunler"]
+  },
+  {
+    "soru": "kategori bazında satış adedi dağılımı nedir?",
+    "sql": "SELECT k.ad AS kategori, SUM(s.adet) AS toplam_adet FROM satislar s JOIN urunler u ON u.id = s.urun_id JOIN kategoriler k ON k.id = u.kategori_id GROUP BY k.ad ORDER BY toplam_adet DESC",
+    "tablolar": ["satislar", "urunler", "kategoriler"]
+  },
+  {
+    "soru": "son 7 günde günlük ciro nedir?",
+    "sql": "SELECT s.tarih, SUM(s.toplam_tutar) AS gunluk_ciro FROM satislar s WHERE s.tarih >= CURRENT_DATE - INTERVAL '7 days' GROUP BY s.tarih ORDER BY s.tarih",
+    "tablolar": ["satislar"]
+  },
+  {
+    "soru": "İstanbul'daki şubede en çok satan ürün nedir?",
+    "sql": "SELECT u.ad AS urun, SUM(s.adet) AS toplam_adet FROM satislar s JOIN urunler u ON u.id = s.urun_id JOIN magazalar m ON m.id = s.magaza_id WHERE m.sehir = 'İstanbul' GROUP BY u.ad ORDER BY toplam_adet DESC LIMIT 5",
+    "tablolar": ["satislar", "urunler", "magazalar"]
+  },
+  {
+    "soru": "İçecek kategorisinin toplam ciro içindeki payı nedir?",
+    "sql": "SELECT ROUND(SUM(CASE WHEN k.ad = 'İçecek' THEN s.toplam_tutar ELSE 0 END) * 100.0 / SUM(s.toplam_tutar), 1) AS yuzde_pay FROM satislar s JOIN urunler u ON u.id = s.urun_id JOIN kategoriler k ON k.id = u.kategori_id",
+    "tablolar": ["satislar", "urunler", "kategoriler"]
+  },
+  {
+    "soru": "şehir bazında ortalama satış tutarı nedir?",
+    "sql": "SELECT m.sehir, AVG(s.toplam_tutar) AS ortalama_tutar FROM satislar s JOIN magazalar m ON m.id = s.magaza_id GROUP BY m.sehir ORDER BY ortalama_tutar DESC",
+    "tablolar": ["satislar", "magazalar"]
+  },
+  {
+    "soru": "markaların cirolarını göster",
+    "sql": "SELECT u.marka, SUM(s.toplam_tutar) AS toplam_ciro FROM satislar s JOIN urunler u ON u.id = s.urun_id GROUP BY u.marka ORDER BY toplam_ciro DESC",
+    "tablolar": ["satislar", "urunler"]
+  },
+  {
+    "soru": "çay satışları nasıl gidiyor",
+    "sql": "SELECT u.ad AS urun, SUM(s.adet) AS toplam_adet, SUM(s.toplam_tutar) AS toplam_ciro FROM satislar s JOIN urunler u ON u.id = s.urun_id WHERE u.ad ILIKE '%çay%' GROUP BY u.ad ORDER BY toplam_adet DESC",
+    "tablolar": ["satislar", "urunler"]
+  },
+  {
+    "soru": "ilk 3 şehir toplam cironun yüzde kaçını oluşturuyor",
+    "sql": "SELECT m.sehir, SUM(s.toplam_tutar) AS toplam_ciro FROM satislar s JOIN magazalar m ON m.id = s.magaza_id GROUP BY m.sehir ORDER BY toplam_ciro DESC",
+    "tablolar": ["satislar", "magazalar"]
+  },
+  {
+    "soru": "İstanbul ciro olarak Antalyadan kaç kat fazla",
+    "sql": "SELECT m.sehir, SUM(s.toplam_tutar) AS toplam_ciro FROM satislar s JOIN magazalar m ON m.id = s.magaza_id WHERE m.sehir IN ('İstanbul','Antalya') GROUP BY m.sehir ORDER BY toplam_ciro DESC",
+    "tablolar": ["satislar", "magazalar"]
+  },
+  {
+    "soru": "ortalama işlem tutarı (sepet büyüklüğü) nedir?",
+    "sql": "SELECT AVG(s.toplam_tutar) AS ortalama_tutar FROM satislar s",
+    "tablolar": ["satislar"]
+  },
+  {
+    "soru": "bir kategorinin toplam satış adedi nedir?",
+    "sql": "SELECT k.ad AS kategori, SUM(s.adet) AS toplam_adet FROM satislar s JOIN urunler u ON u.id = s.urun_id JOIN kategoriler k ON k.id = u.kategori_id GROUP BY k.ad ORDER BY toplam_adet DESC",
+    "tablolar": ["satislar", "urunler", "kategoriler"]
+  }
+]

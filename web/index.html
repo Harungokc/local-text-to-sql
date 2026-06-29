@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Şirket Sorgu — Yerel Text-to-SQL</title>
+<style>
+  :root{
+    --primary:#0f4c5c; --accent:#2a9d8f; --warn:#c1440e;
+    --soft:#eef3f4; --softln:#cfe0e2; --ink:#1c2526; --muted:#6b7d80;
+    --bg:#f7f9fa; --card:#ffffff; --code:#0d1f24;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5;
+  }
+  header{
+    background:linear-gradient(135deg,var(--primary),#0a3845); color:#fff;
+    padding:22px 20px; box-shadow:0 2px 10px rgba(0,0,0,.08);
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:0 16px}
+  header .wrap{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap}
+  .brand h1{margin:0; font-size:22px; letter-spacing:.5px}
+  .brand p{margin:3px 0 0; font-size:13px; opacity:.85}
+  .badge{font-size:11px; font-weight:700; letter-spacing:1px; background:rgba(255,255,255,.15);
+    padding:5px 10px; border-radius:20px; white-space:nowrap}
+  .health{font-size:12px; display:flex; align-items:center; gap:6px; margin-top:6px; opacity:.9}
+  .dot{width:9px;height:9px;border-radius:50%;background:#9bb}
+  .dot.ok{background:#7CFFB2} .dot.err{background:#ff7d6b}
+
+  main{max-width:920px; margin:24px auto 60px; padding:0 16px}
+  .askbox{background:var(--card); border:1px solid var(--softln); border-radius:12px;
+    padding:16px; box-shadow:0 1px 6px rgba(0,0,0,.04)}
+  .askrow{display:flex; gap:10px}
+  #soru{flex:1; font-size:15px; padding:13px 14px; border:1.5px solid var(--softln);
+    border-radius:8px; outline:none; font-family:inherit}
+  #soru:focus{border-color:var(--accent)}
+  button.primary{background:var(--accent); color:#fff; border:none; border-radius:8px;
+    padding:0 22px; font-size:15px; font-weight:700; cursor:pointer; white-space:nowrap}
+  button.primary:hover{background:#23867a}
+  button.primary:disabled{background:#9cc; cursor:not-allowed}
+  .chips{margin-top:12px; display:flex; flex-wrap:wrap; gap:8px}
+  .chip{font-size:12.5px; background:var(--soft); border:1px solid var(--softln);
+    color:var(--primary); padding:6px 11px; border-radius:18px; cursor:pointer}
+  .chip:hover{background:var(--softln)}
+
+  #durum{margin:20px 0; text-align:center; color:var(--muted); display:none}
+  .spinner{display:inline-block; width:18px;height:18px; border:3px solid var(--softln);
+    border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .card{background:var(--card); border:1px solid var(--softln); border-radius:12px;
+    margin-top:20px; overflow:hidden; box-shadow:0 1px 6px rgba(0,0,0,.04); display:none}
+  .card .sec{padding:16px 18px; border-top:1px solid var(--soft)}
+  .card .sec:first-child{border-top:none}
+  .lbl{font-size:11px; font-weight:700; letter-spacing:.8px; text-transform:uppercase;
+    color:var(--accent); margin-bottom:8px; display:flex; align-items:center; justify-content:space-between}
+  .ozet{font-size:16px; color:var(--ink)}
+  .guard{background:#fff6f2; border-left:3px solid var(--warn); padding:12px 14px; border-radius:6px; color:#7a2c12}
+
+  pre.sql{background:var(--code); color:#e8eef0; padding:13px; border-radius:8px; overflow-x:auto;
+    font-family:"DejaVu Sans Mono",Menlo,monospace; font-size:12.5px; margin:0}
+  .tablewrap{overflow-x:auto; border:1px solid var(--soft); border-radius:8px}
+  table{border-collapse:collapse; width:100%; font-size:13.5px}
+  th{background:var(--primary); color:#fff; text-align:left; padding:9px 12px; position:sticky; top:0}
+  td{padding:8px 12px; border-top:1px solid var(--soft)}
+  tr:nth-child(even) td{background:var(--soft)}
+  .rowinfo{font-size:12px; color:var(--muted); margin-top:8px}
+
+  ul.bulgu{margin:0; padding-left:18px} ul.bulgu li{margin:4px 0}
+  .cekince{background:#fff6f2; border-left:3px solid var(--warn); padding:8px 12px; border-radius:6px; font-size:13px; color:#7a2c12; margin-top:6px}
+
+  details summary{cursor:pointer; font-size:13px; color:var(--primary); font-weight:600}
+  .iz{margin:10px 0 0; font-family:"DejaVu Sans Mono",Menlo,monospace; font-size:12px; color:var(--muted)}
+  .iz div{padding:2px 0}
+  .btn-sm{font-size:12px; background:var(--soft); border:1px solid var(--softln); color:var(--primary);
+    padding:5px 11px; border-radius:6px; cursor:pointer; font-weight:600}
+  .btn-sm:hover{background:var(--softln)}
+  .foot{text-align:center; color:var(--muted); font-size:12px; margin-top:30px}
+  .foot b{color:var(--primary)}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <h1>Şirket Sorgu</h1>
+      <p>Türkçe soru → SQL → doğrulanmış rapor · tamamen yerel</p>
+      <div class="health"><span id="dot" class="dot"></span><span id="saglik">bağlantı kontrol ediliyor…</span></div>
+    </div>
+    <span class="badge">YEREL · GİZLİLİK-KORUMALI</span>
+  </div>
+</header>
+
+<main>
+  <div class="askbox">
+    <div class="askrow">
+      <input id="soru" type="text" placeholder="Örn: en çok ciro yapan 5 ürün hangisi?" autocomplete="off">
+      <button id="sor" class="primary">Sor</button>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div id="durum"></div>
+
+  <div class="card" id="sonuc">
+    <div class="sec" id="ozetSec">
+      <div class="lbl">Özet</div>
+      <div class="ozet" id="ozet"></div>
+    </div>
+
+    <div class="sec" id="sqlSec">
+      <div class="lbl">Üretilen SQL <button class="btn-sm" id="kopyala">Kopyala</button></div>
+      <pre class="sql" id="sql"></pre>
+    </div>
+
+    <div class="sec" id="tabloSec">
+      <div class="lbl">Sonuç <button class="btn-sm" id="indir">⬇ Excel/CSV indir</button></div>
+      <div class="tablewrap"><table id="tablo"></table></div>
+      <div class="rowinfo" id="rowinfo"></div>
+    </div>
+
+    <div class="sec" id="bulguSec">
+      <div class="lbl">Bulgular</div>
+      <ul class="bulgu" id="bulgular"></ul>
+      <div id="cekinceler"></div>
+    </div>
+
+    <div class="sec">
+      <details>
+        <summary>🔎 Kontrol izi (sistem her adımda ne karar verdi?)</summary>
+        <div class="iz" id="iz"></div>
+      </details>
+    </div>
+  </div>
+
+  <div class="foot">
+    <b>Şirket Sorgu</b> — yerel, gizlilik-korumalı text-to-SQL ajanı · veri makineden çıkmaz
+  </div>
+</main>
+
+<script>
+const ORNEKLER = [
+  "en çok ciro yapan 5 ürün hangisi?",
+  "şehir bazında toplam satış adedi nedir?",
+  "Pınar markasının toplam cirosu ne kadar?",
+  "kategori bazında satış adedi dağılımı nedir?",
+  "en kârlı ürün hangisi?",
+];
+let sonSatirlar = [], sonSoru = "";
+
+const $ = s => document.querySelector(s);
+
+// Örnek çipleri
+const chips = $("#chips");
+ORNEKLER.forEach(o => {
+  const c = document.createElement("span");
+  c.className = "chip"; c.textContent = o;
+  c.onclick = () => { $("#soru").value = o; sorGonder(); };
+  chips.appendChild(c);
+});
+
+// Sağlık kontrolü
+fetch("/saglik").then(r=>r.json()).then(d=>{
+  const ok = d.veritabani === "baglandi";
+  $("#dot").className = "dot " + (ok ? "ok" : "err");
+  $("#saglik").textContent = ok ? "veritabanı bağlı · model hazır" : ("veritabanı: " + (d.veritabani||"?"));
+}).catch(()=>{ $("#dot").className="dot err"; $("#saglik").textContent="API'ye ulaşılamadı"; });
+
+$("#sor").onclick = sorGonder;
+$("#soru").addEventListener("keydown", e => { if(e.key==="Enter") sorGonder(); });
+
+function setDurum(html){ const d=$("#durum"); d.style.display = html?"block":"none"; d.innerHTML=html; }
+function gizle(){ $("#sonuc").style.display="none"; }
+
+async function sorGonder(){
+  const soru = $("#soru").value.trim();
+  if(!soru) return;
+  sonSoru = soru;
+  gizle();
+  $("#sor").disabled = true;
+  setDurum('<span class="spinner"></span> &nbsp; düşünüyor… (yerel model, ilk soru biraz sürebilir)');
+  const t0 = performance.now();
+  try{
+    const r = await fetch("/sor", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({soru})
+    });
+    const data = await r.json();
+    if(!r.ok){ setDurum('<span style="color:var(--warn)">⚠ '+(data.detail||"Yanıt üretilemedi")+'</span>'); return; }
+    setDurum("");
+    gosterSonuc(data, ((performance.now()-t0)/1000).toFixed(1));
+  }catch(e){
+    setDurum('<span style="color:var(--warn)">⚠ Hata: '+e.message+'</span>');
+  }finally{
+    $("#sor").disabled = false;
+  }
+}
+
+function gosterSonuc(d, sure){
+  $("#sonuc").style.display = "block";
+
+  // Özet
+  $("#ozet").innerHTML = d.sql
+    ? esc(d.ozet_tr)
+    : '<div class="guard">🚫 '+esc(d.ozet_tr || "Bu soru için veritabanında karşılık yok.")+'</div>';
+
+  // SQL (guard'da gizle)
+  $("#sqlSec").style.display = d.sql ? "block" : "none";
+  if(d.sql) $("#sql").textContent = d.sql;
+
+  // Tablo
+  const satirlar = d.satirlar || [];
+  sonSatirlar = satirlar;
+  $("#tabloSec").style.display = (d.sql && satirlar.length) ? "block" : "none";
+  if(d.sql && satirlar.length){
+    const kol = Object.keys(satirlar[0]);
+    let html = "<thead><tr>"+kol.map(k=>"<th>"+esc(k)+"</th>").join("")+"</tr></thead><tbody>";
+    satirlar.slice(0,200).forEach(s=>{
+      html += "<tr>"+kol.map(k=>"<td>"+esc(fmt(s[k]))+"</td>").join("")+"</tr>";
+    });
+    html += "</tbody>";
+    $("#tablo").innerHTML = html;
+    $("#rowinfo").textContent = satirlar.length + " satır" + (satirlar.length>200 ? " (ilk 200 gösteriliyor; tümü indirilebilir)" : "") + " · " + sure + " sn";
+  }
+
+  // Bulgular
+  const bul = d.icgoruler || [];
+  $("#bulguSec").style.display = bul.length ? "block" : "none";
+  $("#bulgular").innerHTML = bul.map(b=>"<li>"+esc(b)+"</li>").join("");
+  const cek = (d.cekinceler||[]).filter(c => !bul.includes(c));
+  $("#cekinceler").innerHTML = cek.map(c=>'<div class="cekince">⚠ '+esc(c)+'</div>').join("");
+
+  // İz
+  const iz = d.iz || [];
+  const sadik = d.sadik===false ? ' <span style="color:var(--warn)">(anlatım reddedildi → deterministik özete düşüldü)</span>' : '';
+  $("#iz").innerHTML = (iz.map(x=>"<div>› "+esc(x)+"</div>").join("")) + '<div style="margin-top:6px">Sadakat: '+(d.sadik===false?'reddedildi':'geçti')+sadik+'</div>';
+}
+
+function fmt(v){
+  if(v===null||v===undefined) return "—";
+  if(typeof v==="number") return v.toLocaleString("tr-TR");
+  return v;
+}
+function esc(s){ const d=document.createElement("div"); d.textContent = s==null?"":String(s); return d.innerHTML; }
+
+// CSV/Excel indir (UTF-8 BOM → Excel Türkçe doğru açar)
+$("#indir").onclick = ()=>{
+  if(!sonSatirlar.length) return;
+  const kol = Object.keys(sonSatirlar[0]);
+  const satir = a => a.map(v=>{
+    const s = (v==null?"":String(v)).replace(/"/g,'""');
+    return /[",;\n]/.test(s) ? '"'+s+'"' : s;
+  }).join(";");
+  const csv = [satir(kol), ...sonSatirlar.map(r=>satir(kol.map(k=>r[k])))].join("\r\n");
+  const blob = new Blob(["﻿"+csv], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "sirket_sorgu_"+Date.now()+".csv";
+  a.click();
+};
+
+// SQL kopyala
+$("#kopyala").onclick = ()=>{
+  navigator.clipboard.writeText($("#sql").textContent).then(()=>{
+    $("#kopyala").textContent="✓ Kopyalandı"; setTimeout(()=>$("#kopyala").textContent="Kopyala",1500);
+  });
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Türkçe Text-to-SQL AI Agent — bağımlılıklar
+fastapi>=0.110
+uvicorn[standard]>=0.27
+asyncpg>=0.29
+openai>=1.30            # vLLM (Faz2) / Ollama (Faz1) — ikisi de OpenAI-uyumlu
+sqlglot>=23.0           # SQL güvenlik doğrulaması (AST parse)
+pandas>=2.0            # rapor: deterministik metrik hesaplama
+chromadb>=0.5          # few-shot örnek deposu (yerel embedding)
+python-dotenv>=1.0      # opsiyonel: yerel geliştirmede .env okuma
