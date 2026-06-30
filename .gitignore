@@ -21,3 +21,6 @@ chroma_db/
 .DS_Store
 .idea/
 .vscode/
+
+# Office geçici/kilit dosyaları
+~$*
