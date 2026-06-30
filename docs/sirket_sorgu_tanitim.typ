@@ -1,5 +1,5 @@
 // ============================================================
-//  Yerel Şirket-Sorgu — Tanıtım Dokümanı
+//  Şirket-Sorgu — Freelance Hizmet & Tanıtım Dokümanı
 //  Typst kaynak. Derleme:  typst compile sirket_sorgu_tanitim.typ
 // ============================================================
 
@@ -10,13 +10,14 @@
 #let softln  = rgb("#cfe0e2")
 #let ink     = rgb("#1c2526")
 
-#set document(title: "Yerel Şirket-Sorgu — Gizlilik-Korumalı Text-to-SQL", author: "Harun Gökçe")
-#set page(
-  paper: "a4",
-  margin: (x: 2.0cm, y: 2.2cm),
-  numbering: "1",
-  number-align: center,
-)
+// İletişim sabitleri
+#let AD     = "Harun Gökçe"
+#let EPOSTA = "harungokce70@gmail.com"
+#let TEL    = "0506 155 46 42"
+#let REPO   = "github.com/Harungokc/local-text-to-sql"
+#let REPO_URL = "https://github.com/Harungokc/local-text-to-sql"
+
+#set document(title: "Şirket-Sorgu — Yerel Text-to-SQL (Freelance Hizmet)", author: AD)
 #set text(font: ("Helvetica Neue", "Arial", "Libertinus Serif"), size: 10.5pt, lang: "tr", fill: ink)
 #set par(justify: true, leading: 0.7em)
 #set heading(numbering: none)
@@ -25,14 +26,14 @@
 #show heading.where(level: 1): it => {
   pagebreak(weak: true)
   block(spacing: 1.2em)[
-    #set text(size: 20pt, weight: "bold", fill: primary)
+    #set text(size: 19pt, weight: "bold", fill: primary)
     #it.body
     #v(-6pt)
     #line(length: 100%, stroke: 2pt + accent)
   ]
 }
 #show heading.where(level: 2): it => block(above: 1.2em, below: 0.6em)[
-  #set text(size: 13.5pt, weight: "bold", fill: primary)
+  #set text(size: 13pt, weight: "bold", fill: primary)
   #it.body
 ]
 #show heading.where(level: 3): it => block(above: 0.9em, below: 0.4em)[
@@ -43,57 +44,94 @@
 #show raw.where(block: false): it => box(fill: soft, inset: (x: 3pt, y: 0pt), outset: (y: 3pt), radius: 2pt, text(font: "DejaVu Sans Mono", size: 9pt, it))
 #show raw.where(block: true): it => block(fill: rgb("#0d1f24"), inset: 10pt, radius: 4pt, width: 100%, text(font: "DejaVu Sans Mono", size: 8.5pt, fill: rgb("#e8eef0"), it))
 
-// --- Yardımcı: bilgi kutusu ---
+// --- Yardımcılar ---
 #let kutu(baslik, govde, renk: accent) = block(
-  width: 100%, fill: soft, inset: 10pt, radius: 4pt, stroke: (left: 3pt + renk),
-  spacing: 1em,
+  width: 100%, fill: soft, inset: 10pt, radius: 4pt, stroke: (left: 3pt + renk), spacing: 1em,
 )[
   #text(weight: "bold", fill: renk)[#baslik] \
   #govde
 ]
-
-// --- Yardımcı: dikey akış düğümü ---
 #let nod(govde, renk: primary, koyu: false) = align(center, box(
-  width: 92%, fill: if koyu { renk } else { soft }, inset: 8pt, radius: 4pt,
-  stroke: 1pt + renk,
+  width: 92%, fill: if koyu { renk } else { soft }, inset: 8pt, radius: 4pt, stroke: 1pt + renk,
   text(fill: if koyu { white } else { ink }, weight: if koyu { "bold" } else { "regular" }, size: 9.5pt, govde),
 ))
 #let ok = align(center, text(fill: accent, size: 14pt, weight: "bold")[↓])
 
+// İletişim bloğu (kapanış + CTA için)
+#let iletisim_blok = block(
+  width: 100%, fill: primary, inset: 14pt, radius: 6pt,
+)[
+  #set text(fill: white)
+  #text(size: 14pt, weight: "bold")[İletişim — Şirketinizde Kuralım] \
+  #v(4pt)
+  #grid(columns: (auto, 1fr), gutter: 8pt, row-gutter: 4pt,
+    text(fill: rgb("#a9d6cf"))[Ad:], [#AD — Freelance Yapay Zekâ & Yazılım Geliştirici],
+    text(fill: rgb("#a9d6cf"))[E-posta:], [#EPOSTA],
+    text(fill: rgb("#a9d6cf"))[Telefon:], [#TEL],
+    text(fill: rgb("#a9d6cf"))[GitHub:], [#REPO],
+  )
+  #v(4pt)
+  #text(size: 11pt, weight: "bold", fill: rgb("#7CFFB2"))[Bu sistemi şirketinizin verisiyle denemek veya kurmak için iletişime geçin.]
+]
+
 // ============================================================
 //  KAPAK
 // ============================================================
-#set page(numbering: none)
-#v(3cm)
+#set page(paper: "a4", margin: (x: 2.0cm, y: 2.0cm), numbering: none)
+
+// Üst freelancer şeridi
+#block(width: 100%, fill: primary, inset: 10pt, radius: 4pt)[
+  #set text(fill: white, size: 10pt)
+  #grid(columns: (1fr, auto), column-gutter: 16pt, align: (left + horizon, right + horizon),
+    [#text(weight: "bold", size: 11pt)[#AD] — Freelance Yapay Zekâ & Yazılım Geliştirici],
+    [#EPOSTA  ·  #TEL],
+  )
+]
+
+#v(2.2cm)
 #align(center)[
-  #text(size: 13pt, fill: accent, weight: "bold", tracking: 2pt)[YEREL · GİZLİLİK-KORUMALI · YAPAY ZEKÂ]
-  #v(0.8cm)
+  #text(size: 12pt, fill: accent, weight: "bold", tracking: 2pt)[YEREL · GİZLİLİK-KORUMALI · YAPAY ZEKÂ]
+  #v(0.7cm)
   #text(size: 30pt, weight: "bold", fill: primary)[Şirket-Sorgu]
   #v(0.1cm)
   #text(size: 17pt, fill: ink)[Türkçe Soru → SQL → Otomatik Rapor]
-  #v(0.5cm)
+  #v(0.4cm)
   #line(length: 40%, stroke: 2pt + accent)
   #v(0.6cm)
-  #block(width: 80%)[
+  #block(width: 82%)[
     #set text(size: 12pt)
     #set par(justify: false)
-    Şirket verisini *hiç dışarı çıkarmadan*, tamamen yerel çalışan bir yapay zekâ ajanı:
+    *Şirketinizin verisine Türkçe soru sorun — kurulumunu biz yapalım.*
+    Veriyi *hiç dışarı çıkarmadan*, tamamen yerel çalışan bir yapay zekâ ajanı:
     çalışan Türkçe sorar, sistem güvenli SQL üretir, çalıştırır ve doğrulanmış bir Türkçe rapor döndürür.
   ]
-  #v(2cm)
+  #v(1.4cm)
   #grid(columns: (auto, auto), gutter: 14pt,
     align(right)[#text(weight: "bold")[Hazırlayan:] \ #text(weight: "bold")[Tarih:] \ #text(weight: "bold")[Sürüm:]],
-    align(left)[Harun Gökçe \ 28 Haziran 2026 \ MVP (Faz 1–2)],
+    align(left)[#AD \ 29 Haziran 2026 \ Çalışan MVP],
   )
-  #v(1.4cm)
-  #kutu("Bağlantılar")[
-    GitHub: #text(fill: warn)[‹repo-linkini-buraya-ekle›] \
-    Demo videosu: #text(fill: warn)[‹video-linkini-buraya-ekle›] \
-    LinkedIn: #text(fill: warn)[‹profil-linkini-buraya-ekle›]
+  #v(1.0cm)
+  #kutu("Bu sistemi şirketinizde kuruyoruz", renk: primary)[
+    Kendi veritabanınıza entegre eder, ihtiyacınıza göre özelleştirir ve eğitiriz. \
+    *GitHub (açık kaynak):* #link(REPO_URL)[#REPO] \
+    *İletişim:* #EPOSTA  ·  #TEL
   ]
 ]
 
-#set page(numbering: "1")
+// ============================================================
+//  Bundan sonraki tüm sayfalarda: numara + iletişim footer'ı
+// ============================================================
+#set page(
+  numbering: "1",
+  footer: context [
+    #line(length: 100%, stroke: 0.5pt + softln)
+    #v(-4pt)
+    #grid(columns: (1fr, auto),
+      text(size: 7.5pt, fill: rgb("#5a6b6d"))[#AD · #EPOSTA · #TEL · #REPO],
+      text(size: 7.5pt, fill: rgb("#5a6b6d"))[#counter(page).display()],
+    )
+  ],
+)
 
 // ============================================================
 //  İÇİNDEKİLER
@@ -101,31 +139,118 @@
 #heading(level: 1)[İçindekiler]
 #outline(title: none, depth: 1, indent: 1em)
 
-= 1. Yönetici Özeti
+= 1. Bu Sistemi Şirketinizde Kuruyoruz
 
-Bu proje, bir şirketin kendi veritabanına *doğal Türkçe ile* soru sorabilmesini sağlayan, *tamamen yerel (local) çalışan* bir text-to-SQL yapay zekâ ajanıdır. Kullanıcı "en çok ciro yapan 5 ürün hangisi?" diye sorar; sistem soruyu güvenli bir SQL sorgusuna çevirir, salt-okunur çalıştırır, sonucu işler ve *doğrulanmış* bir Türkçe rapor döndürür.
+Şirketinizin verisi var ama çoğu çalışan SQL bilmediği için ona ulaşamıyor. Hazır bulut çözümleri ise veriyi dışarı (OpenAI vb.) gönderiyor — birçok kurum için kabul edilemez. *Şirket-Sorgu* bu iki sorunu birden çözer: çalışanlar *Türkçe* sorar, cevap *saniyeler içinde* gelir ve *veri makineden hiç çıkmaz.*
+
+Ben, *#AD*, bu sistemi *sizin verinize ve ihtiyaçlarınıza göre* kuruyorum.
+
+== Sunduğum hizmetler
+#grid(columns: (1fr, 1fr), gutter: 12pt,
+  kutu("Kurulum & entegrasyon", renk: accent)[
+    Sistemi şirketinizin sunucusuna/bilgisayarına kurar, *kendi veritabanınıza* (PostgreSQL, MySQL vb.) bağlarım. Veri yerinde kalır.
+  ],
+  kutu("Özelleştirme & eğitim", renk: accent)[
+    Şemanıza özel örnekler, terimler ve raporlar; ekibinize kullanım eğitimi.
+  ],
+  kutu("Bakım & geliştirme", renk: accent)[
+    Doğruluğu artırma, yeni soru türleri, performans ve sürüm güncellemeleri.
+  ],
+  kutu("Özel AI çözümleri", renk: accent)[
+    Yalnızca bu sistemi değil; şirketinize özel *yapay zekâ ajanları ve otomasyonlar* da geliştiriyorum.
+  ],
+)
+
+== Hangi sektörler için?
+Sistem veritabanı-agnostiktir; veri analizi yapan *her sektöre* uyarlanır. Özellikle *gizlilik-hassas* sektörlerde yerel çalışma kritik avantajdır:
+
+#align(center, table(
+  columns: (1fr, 1.3fr),
+  inset: 7pt, align: (left, left),
+  stroke: 0.5pt + softln,
+  fill: (_, y) => if y == 0 { primary } else if calc.odd(y) { soft } else { white },
+  table.header(
+    text(fill: white, weight: "bold")[Sektör],
+    text(fill: white, weight: "bold")[Örnek kullanım],
+  ),
+  [Perakende & E-ticaret], [Satış, ciro, stok, kampanya ve ürün performansı analizi],
+  [Muhasebe & Mali Müşavirlik], [Müşteri/cari verileri — gizliliği kritik, yerel çalışma şart],
+  [Sağlık & Klinik], [Hasta/randevu verisi — KVKK gereği veri dışarı çıkamaz],
+  [Hukuk Büroları], [Dosya/müvekkil verisi üzerinde gizli sorgulama],
+  [Finans & Sigorta], [Regülasyon altında poliçe/işlem analizi],
+  [Lojistik & Kargo], [Sevkiyat, teslimat süreleri, bölgesel performans],
+  [Üretim & Fabrika], [Üretim, bakım, fire ve verimlilik raporları],
+  [Turizm & Otelcilik], [Rezervasyon, doluluk, gelir (RevPAR) analizi],
+  [Eğitim Kurumları], [Öğrenci/başarı verisi üzerinde güvenli raporlama],
+  [Kamu & Belediye], [Vatandaş verisi — yurt içinde, yerelde kalmalı],
+))
+
+#kutu("Şirketinizde kuralım", renk: primary)[
+  Kendi verinizle denemek veya kurmak için: *#EPOSTA*  ·  *#TEL*  ·  #link(REPO_URL)[#REPO]
+]
+
+= 2. Yönetici Özeti
+
+Bu sistem, bir şirketin kendi veritabanına *doğal Türkçe ile* soru sorabilmesini sağlayan, *tamamen yerel (local) çalışan* bir text-to-SQL yapay zekâ ajanıdır. Kullanıcı "en çok ciro yapan 5 ürün hangisi?" diye sorar; sistem soruyu güvenli bir SQL sorgusuna çevirir, salt-okunur çalıştırır, sonucu işler ve *doğrulanmış* bir Türkçe rapor döndürür.
 
 #kutu("Tek cümlede değer önermesi", renk: primary)[
-  Kurumsal text-to-SQL hâlâ çözülmemiş zor bir problem (Spider 2.0 benchmark'ında GPT-4o bile yalnızca \~%10). Bu projede soruna *mühendislik disipliniyle* ve *veriyi hiç dışarı çıkarmadan* yaklaşıldı.
+  Kurumsal text-to-SQL hâlâ çözülmemiş zor bir problem (Spider 2.0 benchmark'ında GPT-4o bile yalnızca \~%10). Bu sisteme *mühendislik disipliniyle* ve *veriyi hiç dışarı çıkarmadan* yaklaşıldı.
 ]
 
 #grid(columns: (1fr, 1fr), gutter: 14pt,
   kutu("Kimin için?", renk: accent)[
-    - *İşletmeler:* veri analizi için SQL bilmeyen ekiplere self-servis.
-    - *Mühendisler:* katmanlı kontrol + RAG few-shot mimarisi referansı.
+    - *İşletmeler:* SQL bilmeyen ekiplere self-servis veri analizi.
+    - *Yöneticiler:* anında Türkçe rapor, dışa bağımlılık yok.
     - *Gizlilik-hassas kurumlar:* veri makineden hiç çıkmaz (KVKK/GDPR dostu).
   ],
   kutu("Ölçülen sonuç (3B model, dizüstü)", renk: accent)[
     - Temel/orta sorular: *%87–95 doğruluk*
-    - İleri analitik (pencere fn., percentile): *\~%20*
+    - İleri analitik (pencere fn., percentile): *\~%20* (sunucuda 7B/32B ile yükselir)
     - Güvenlik testi: *15/15* · Türetilmiş metrik: *3/3*
     - Tüm bu sayılar gerçekten ölçüldü — uydurma yok.
   ],
 )
 
-Projenin ayırt edici yanı tek bir model değil, *mimaridir*: şema linkleme, RAG few-shot örnekleme, çok-katmanlı güvenlik/doğruluk kontrolü, türetilmiş-metrik denetimi ve "sayıyı kod hesaplar, LLM yalnızca yorumlar" ilkesiyle *halüsinasyonsuz* rapor.
+Ayırt edici yan tek bir model değil, *mimaridir*: şema linkleme, RAG few-shot örnekleme, çok-katmanlı güvenlik/doğruluk kontrolü, türetilmiş-metrik denetimi ve "sayıyı kod hesaplar, LLM yalnızca yorumlar" ilkesiyle *halüsinasyonsuz* rapor.
 
-= 2. Problem: Text-to-SQL Neden Zor, Gizlilik Neden Önemli?
+= 3. Sorabileceğiniz Soru Türleri
+
+Sistem şemanızı *çalışma anında* okur; aşağıdaki soru türlerini Türkçe sorabilirsiniz. (İşaretli sayılar bu demoda *gerçekten ölçülmüş* sonuçlardır.)
+
+== Satış & ciro
+- "en çok ciro yapan 5 ürün hangisi?"
+- "şehir bazında toplam satış adedi nedir?"
+- "Pınar markasının toplam cirosu ne kadar?"
+
+== Oran & pay soruları (ölçülmüş gerçek sonuçlar)
+- "İçecek kategorisinin toplam ciro içindeki payı nedir?" → *%13,1*
+- "İstanbul, Antalya'dan kaç kat fazla ciro yaptı?" → *\~3,51 kat*
+- "en çok ciro yapan ürünün toplam içindeki payı nedir?" → *%4,1*
+
+#kutu("Neden oran soruları özel?", renk: primary)[
+  Çoğu sistem yüzde/pay sorularında *yanlış paydadan* hesap yapar (örn. yalnızca ilk 5 ürünün toplamını alır). Bu sistem ayrı bir doğrulama katmanıyla (K3) *gerçek toplamı* çekip doğru yüzdeyi verir.
+]
+
+== Kampanya & indirim takibi
+Verinizde kampanya/indirim alanları olduğunda şu sorular yanıtlanır:
+- "X kampanyası döneminde ciro ne kadar arttı?"
+- "indirimli ürünlerin toplam satışı nedir?"
+- "kampanyalı vs kampanyasız ürünlerin cirosu nasıl karşılaştırılıyor?"
+- "hangi kampanya en çok ek satış getirdi?"
+
+#kutu("Dürüst not", renk: warn)[
+  Demo veritabanında kampanya verisi *yoktur* — bu yüzden sistem demoda bu soruları (uydurmamak için) güvenle reddeder. Şirketinizin veritabanında kampanya/indirim tabloları olduğunda, sistem şemayı runtime okuduğu için bu sorular *otomatik* yanıtlanır hale gelir.
+]
+
+== Karşılaştırma & trend
+- "bu ay ile geçen ayın cirosunu karşılaştır"
+- "son 7 günde günlük ciro nasıl?"
+
+== Stok / müşteri (verinize göre)
+- "stok azalan ürünler hangileri?"  ·  "en çok alışveriş yapan müşteriler kim?"
+(Bu alanlar veritabanınızda varsa yanıtlanır; yoksa sistem "bu veri yok" der, uydurmaz.)
+
+= 4. Problem: Text-to-SQL Neden Zor, Gizlilik Neden Önemli?
 
 == Zorluk gerçek
 Basit akademik testlerde (Spider 1.0) en iyi sistemler \~%86–91 başarıya ulaşır. Ama *gerçek kurumsal şemalarda* (Spider 2.0 — 1000+ kolonlu veritabanları, 100+ satırlık SQL) tablo tersine döner:
@@ -146,13 +271,13 @@ Basit akademik testlerde (Spider 1.0) en iyi sistemler \~%86–91 başarıya ula
 ))
 
 #kutu("Çıkarım", renk: warn)[
-  Model seçimi tek başına belirleyici *değil*. Doğruluğu *mimari* belirler — retrieval, şema linkleme, kontrol katmanları, semantik denetim. Bu projenin neden "tek model + tek atış" değil de katmanlı bir pipeline olarak tasarlandığının birinci-elden gerekçesi budur.
+  Model seçimi tek başına belirleyici *değil*. Doğruluğu *mimari* belirler — retrieval, şema linkleme, kontrol katmanları, semantik denetim. Sistemin neden "tek model + tek atış" değil de katmanlı bir pipeline olarak tasarlandığının birinci-elden gerekçesi budur.
 ]
 
 == Gizlilik: şirketlerin asıl korkusu
-Çoğu hazır çözüm soruyu ve şemayı bir bulut API'sine (OpenAI, vb.) gönderir — yani *veri şirketten çıkar.* Birçok kurum için bu pazarlıksız bir engeldir. Bu proje baştan sona *yerel modelle* çalışır: soru, şema ve veri bilgisayardan/sunucudan *hiç dışarı çıkmaz*.
+Çoğu hazır çözüm soruyu ve şemayı bir bulut API'sine gönderir — yani *veri şirketten çıkar.* Birçok kurum için bu pazarlıksız bir engeldir. Bu sistem baştan sona *yerel modelle* çalışır: soru, şema ve veri bilgisayardan/sunucudan *hiç dışarı çıkmaz*.
 
-= 3. Bu Projeyi Ne Ayrıştırıyor?
+= 5. Bu Sistemi Ne Ayrıştırıyor?
 
 #align(center, table(
   columns: (1fr, 1.2fr),
@@ -161,7 +286,7 @@ Basit akademik testlerde (Spider 1.0) en iyi sistemler \~%86–91 başarıya ula
   fill: (_, y) => if y == 0 { primary } else if calc.odd(y) { soft } else { white },
   table.header(
     text(fill: white, weight: "bold")[Sıradan demo],
-    text(fill: white, weight: "bold")[Bu proje],
+    text(fill: white, weight: "bold")[Bu sistem],
   ),
   [Bulut API → veri dışarı çıkar], [*%100 yerel* — gizlilik-korumalı],
   [SQL'i körü körüne çalıştırır], [*Çok-katmanlı güvenlik* (read-only kullanıcı + read-only transaction + AST denetimi + timeout)],
@@ -170,7 +295,7 @@ Basit akademik testlerde (Spider 1.0) en iyi sistemler \~%86–91 başarıya ula
   [Sayıyı LLM uydurur], [*Sayıyı pandas hesaplar*, LLM yalnızca yorumlar → halüsinasyon yok],
 ))
 
-= 4. Mimari: Uçtan Uca Akış
+= 6. Mimari: Uçtan Uca Akış
 
 Sistem bir soruyu, her adımı denetlenen bir hat üzerinden cevaba dönüştürür:
 
@@ -201,7 +326,7 @@ Sistem bir soruyu, her adımı denetlenen bir hat üzerinden cevaba dönüştür
   Her katman tek sorumluluk taşır ve ayrı dosyadadır: `sql_guvenlik.py` (güvenlik), `sql_kontrol.py` (doğruluk), `analiz_kontrol.py` (metrik denetimi), `sema.py` (şema), `retrieval.py` (few-shot/RAG), `rapor.py` (rapor), `db_sorgu.py` (read-only DB), `runner.py` (orkestratör).
 ]
 
-= 5. Kontrol Katmanları: Sistemin Kalbi
+= 7. Kontrol Katmanları: Sistemin Kalbi
 
 Tasarımın merkezinde bir ilke var: *her adıma kontrol koymak aşırı mühendisliktir.* Bunun yerine "hata olasılığı × etki" en yüksek *kritik noktalara* odaklanıldı. Ve sıralama bilinçli: *önce ucuz deterministik kontroller, en son pahalı LLM.*
 
@@ -223,17 +348,11 @@ Tasarımın merkezinde bir ilke var: *her adıma kontrol koymak aşırı mühend
   [*Sadakat*], [Anlatımda olgularda olmayan sayı/isim → reddet, deterministik özete düş], [deterministik], [\~0],
 ))
 
-#kutu("Neden bu noktalar?", renk: primary)[
-  - *K1 (güvenlik):* etki felaket (silme/sızma), olasılık düşük → pazarlıksız kontrol.
-  - *K2 (doğruluk):* uydurma kolon en yaygın LLM hatası; `EXPLAIN`, çalıştırmadan tip/şema uyumunu %100 garanti eder — üstelik bedava. *En yüksek getirili nokta.*
-  - *K3 (anlam):* "çalışır ama yanlış cevap" yalnızca burada yakalanır; sadece risk sinyalinde (kesik sonuç) tetiklenir.
-]
-
 #kutu("Tasarım felsefesi", renk: accent)[
-  *Kendinden emin yanlış cevap vermektense "emin değilim / bu veri yok" demek daha sağlamdır.* Koşul sağlanmazsa sistem metriği bastırır ve çekince ekler. Dürüstlük, hem doğruluk hem de güven kazandırır.
+  *Kendinden emin yanlış cevap vermektense "emin değilim / bu veri yok" demek daha sağlamdır.* Koşul sağlanmazsa sistem metriği bastırır ve çekince ekler. Dürüstlük, hem doğruluk hem güven kazandırır.
 ]
 
-= 6. Halüsinasyonsuz Rapor
+= 8. Halüsinasyonsuz Rapor
 
 Rapor katmanı *hibrit* tasarlandı çünkü "LLM hesaplasın" güvenilmez (akademik testlerde sayısal doğruluk \~%78):
 
@@ -253,14 +372,14 @@ Tüm sayılar (toplam, ortalama, pay, sıralama) *kod* tarafından hesaplanır; 
     FROM satislar s JOIN urunler u ON u.id = s.urun_id
     GROUP BY u.ad ORDER BY ciro DESC LIMIT 5
 
-  SONUÇ:  Bal 460g 175.680 · Kaşar 400g 167.475 · Peynir 500g 132.820 ...
-  ÖZET :  Bal 460g, tüm ciro (1.646.768) içinde %10.7 pay tutuyor.
+  SONUÇ:  Dana Kuşbaşı 2.687.760 · Beyaz Peynir 2.244.220 · Kıyma 2.140.880 ...
+  ÖZET :  Dana Kuşbaşı 1kg, tüm ciro (66.181.361) içinde %4.1 pay tutuyor.
   İZ   :  K0 ✓  K1 ✓  K2 ✓  Çalıştırma ✓  K3: gerçek toplam ayrı çekildi  Sadakat ✓
   ```
-  Not: "pay" hesabı için payda (1.646.768) ayrı, güvenli bir sorguyla çekildi — LIMIT'li sonucun toplamı *değil*. Bu, K3'ün asıl işidir.
+  Not: "pay" hesabı için payda (66.181.361) ayrı, güvenli bir sorguyla çekildi — LIMIT'li sonucun toplamı *değil*. Bu, K3'ün asıl işidir.
 ]
 
-= 7. Veritabanı: Neden PostgreSQL?
+= 9. Veritabanı: Neden PostgreSQL?
 
 PostgreSQL, gizlilik-korumalı ve güvenli bir text-to-SQL hattı için ideal özelliklere sahip:
 
@@ -271,12 +390,12 @@ PostgreSQL, gizlilik-korumalı ve güvenli bir text-to-SQL hattı için ideal ö
   fill: (_, y) => if y == 0 { primary } else if calc.odd(y) { soft } else { white },
   table.header(
     text(fill: white, weight: "bold")[Özellik],
-    text(fill: white, weight: "bold")[Bu projeye katkısı],
+    text(fill: white, weight: "bold")[Katkısı],
   ),
   [Salt-okunur kullanıcı (GRANT)], [Yazma/silme'yi *fiziksel olarak* imkânsız kılar — en güçlü koruma katmanı],
   [Read-only transaction], [Çalıştırma sırasında ikinci savunma hattı],
   [`EXPLAIN` (yan etkisiz)], [Sorguyu çalıştırmadan şema/tip uyumunu %100 doğrular (K2)],
-  [`information_schema`], [Şemayı runtime'da okuma → kod içine gömülü DDL yok, şema değişince kırılmaz],
+  [`information_schema`], [Şemayı runtime'da okuma → kod içine gömülü DDL yok; *kendi DB'nizi* bağlayabilirsiniz],
   [Olgunluk & yaygınlık], [Kurumlarda zaten standart; ek lisans/maliyet yok],
 ))
 
@@ -293,18 +412,14 @@ Mimari veritabanı-agnostiktir; SQL diyalekti değişse de yaklaşım aynıdır:
     text(fill: white, weight: "bold")[Not],
   ),
   [MySQL / MariaDB], [Çok yaygın; read-only kullanıcı + EXPLAIN mevcut, diyalekt farkları küçük],
-  [SQLite], [Tek-dosya, kurulumsuz; küçük/yerel demolar ve gömülü kullanım için ideal],
+  [SQLite], [Tek-dosya, kurulumsuz; küçük/yerel kullanım için ideal],
   [DuckDB], [Analitik (OLAP) için çok hızlı; CSV/Parquet üzerinde doğrudan SQL],
-  [SQL Server / Oracle], [Kurumsal; diyalekt ve izin modeli farklı ama aynı kontrol felsefesi geçerli],
+  [SQL Server / Oracle], [Kurumsal; diyalekt/izin modeli farklı ama aynı kontrol felsefesi geçerli],
 ))
 
-#kutu("Diyalekt notu")[
-  Tek değişen, üretim prompt'undaki SQL diyalekti ve `EXPLAIN` söz dizimidir. Kontrol katmanları, rapor ve güvenlik mantığı *aynen* taşınır. Bu projede PostgreSQL seçildi çünkü güçlü izin modeli + `EXPLAIN` + kurumsal yaygınlık üçlüsünü en temiz sunan veritabanı.
-]
+= 10. Model & Sunucu: Hangisi Ne Kadar Yeterli?
 
-= 8. Model Seçimi: Hangisi Ne Kadar Yeterli?
-
-Donanım kısıtı belirleyici oldu: geliştirme makinesi *MacBook M1, 8 GB RAM.*
+Aynı kod hem dizüstüde küçük modelle, hem sunucuda büyük modelle çalışır — *tek değişen iki ortam değişkeni* (`YEREL_MODEL`, `VLLM_BASE_URL`).
 
 #align(center, table(
   columns: (auto, auto, auto, 1fr),
@@ -314,126 +429,60 @@ Donanım kısıtı belirleyici oldu: geliştirme makinesi *MacBook M1, 8 GB RAM.
   table.header(
     text(fill: white, weight: "bold")[Model],
     text(fill: white, weight: "bold")[Boyut],
-    text(fill: white, weight: "bold")[8GB M1'de?],
+    text(fill: white, weight: "bold")[Nerede],
     text(fill: white, weight: "bold")[Rol],
   ),
-  [qwen2.5-coder *3B*], [1.9 GB], [✅ rahat], [Yerel geliştirme + test (ana model)],
-  [qwen2.5-coder *7B*], [4.7 GB], [❌ *çökertti*], [Yalnızca kiralık GPU'da],
-  [Qwen2.5-Coder *32B*], [\~18–24 GB], [❌ imkânsız], [Kiralık GPU'da final/ileri analitik],
+  [Qwen2.5-Coder *3B*], [1.9 GB], [Dizüstü/PC], [Gündelik raporlama (temel/orta) — %87–95],
+  [Qwen2.5-Coder *7B*], [4.7 GB], [Sunucu/GPU], [Daha yüksek doğruluk, daha çok kullanıcı],
+  [Qwen2.5-Coder *32B*], [\~18–24 GB], [Sunucu/GPU], [İleri analitik (pencere fn., karmaşık analiz)],
 ))
 
-#kutu("Sahadan ders: 7B, 8GB makineyi çökertti", renk: warn)[
-  7B modeli (4.7 GB) yerel çalıştırınca, model + PostgreSQL + Python + embedding toplamı 8 GB'ı aştı → swap → makine kilitlendi. Karar: *geliştirme/test hep 3B yerelde; 7B/32B yalnızca kiralık GPU'da.* Geçişte yalnızca iki ortam değişkeni (`YEREL_MODEL`, `VLLM_BASE_URL`) değişir; kod aynı kalır.
-]
-
-== 3B'nin doğruluk haritası (ölçülen)
-Doğru cevabı önceden bilinen sorularla iki stres turu çalıştırıldı:
-
-#align(center, table(
-  columns: (1.6fr, auto, auto),
-  inset: 7pt, align: (left, center, center),
-  stroke: 0.5pt + softln,
-  fill: (_, y) => if y == 0 { accent } else if calc.odd(y) { soft } else { white },
-  table.header(
-    text(fill: white, weight: "bold")[Soru sınıfı],
-    text(fill: white, weight: "bold")[Önce],
-    text(fill: white, weight: "bold")[İyileştirme sonrası],
-  ),
-  [Temel/orta (agregasyon, filtre, 2–3 join, oran, guard)], [11/20], [*19/20 (%95)*],
-  [Orijinal gold set], [6/8], [*7/8 (%87.5)*],
-  [Türetilmiş metrik (K3)], [3/3], [*3/3*],
-  [İleri analitik (window, top-N-per-group, percentile, nested)], [—], [*3/15 (%20)*],
-))
-
-=== 3B'nin kalıcı duvarı
-3B; *pencere fonksiyonu (ROW_NUMBER), grup-başına-top-N, çok-seviyeli iç içe agregasyon ve percentile/medyan* sorularını çözemiyor — deposuna doğru örnek konsa bile genelleyemiyor. Bu, few-shot ile aşılamayan *kavramsal bir sınır.* Bu tür ileri analitik için 7B/32B (GPU) gerekir.
-
-#kutu("Net çıkarım", renk: primary)[
-  3B modeli, *1.9 GB ile bir dizüstüde*, temel ve orta zorluktaki iş sorularında %87–95 doğrulukla çalışır — gündelik raporlamanın büyük kısmı budur. İleri analitik gerektiğinde aynı kod, kiralık GPU'da 7B/32B'ye geçer. Bu, "küçükle başla, gerektiğinde büyüt" stratejisidir.
-]
-
-= 9. Yerel (Local) Çalışmanın Avantajları
+== Sunucuda çalıştırma (7B / 32B)
+İleri analitik veya çok kullanıcı gerektiğinde sistem bir sunucuda büyük modelle çalışır. Veri yine *tek-kiracı* ve *dışarı çıkmadan*:
 
 #grid(columns: (1fr, 1fr), gutter: 12pt,
-  kutu("Gizlilik & uyum", renk: accent)[
-    Veri, şema ve sorular makineden *hiç çıkmaz.* KVKK/GDPR hassas kurumlar için pazarlıksız avantaj. Bulut API'lerinde veri üçüncü tarafa gider; burada gitmez.
+  kutu("Kiralık GPU", renk: accent)[
+    RunPod gibi sağlayıcılarda izole (tek-kiracı) GPU — örn. A6000 \~\$0.49/saat. *İhtiyaç anında aç, işin bitince kapat* → maliyet düşük. 32B'yi rahat taşır.
   ],
-  kutu("Sıfır API maliyeti", renk: accent)[
-    Token başına ücret yok. Sorgu sayısı arttıkça maliyet *artmaz.* Yalnızca bir kez donanım/elektrik. Bulut API'de her sorgu para demektir.
+  kutu("Yurt içi / dedicated sunucu", renk: accent)[
+    KVKK hassasiyeti yüksekse tam dedicated/fiziksel sunucu (yurt içi). Veri ülke dışına hiç çıkmaz.
   ],
-  kutu("Bağımsızlık", renk: accent)[
-    İnternet kesintisi, API kotası, fiyat değişikliği, model emekliye ayrılması *etkilemez.* Sistem tamamen senin kontrolünde.
+  kutu("Şirketin kendi sunucusu", renk: accent)[
+    Donanımınız varsa sistemi *sizin* sunucunuza kurarım — hiçbir dış bağımlılık olmadan.
   ],
-  kutu("Öngörülebilirlik", renk: accent)[
-    Sabit donanımda *tutarlı* gecikme; dış servis yavaşlaması yok. Sıcaklık 0 ile demo determinizmi.
+  kutu("Servis altyapısı", renk: accent)[
+    vLLM ile OpenAI-uyumlu, çok-istekli (batching) servis. Web arayüzü + API hazır.
   ],
 )
 
-#kutu("Ne zaman GPU'ya geçmeli?", renk: primary)[
-  Yerel 3B gündelik raporlama için yeter. *İleri analitik (pencere fonksiyonu, karmaşık çok-tablolu analiz) veya final/canlı demo gerektiğinde,* aynı kod kiralık bir GPU'da (ör. RunPod A6000, \~\$0.49/saat) 7B/32B ile çalıştırılır — yine tek-kiracı, veri yine dışarı çıkmadan. Sadece ihtiyaç anında aç, sonra kapat.
+#kutu("Bu kurulumu biz yapıyoruz", renk: primary)[
+  Donanım seçimi, model kurulumu, güvenli ağ ve sizin verinize entegrasyon — uçtan uca tarafımızdan yapılır. Siz yalnızca soruları sorarsınız.
 ]
 
-= 10. Neye Dikkat Ettik (Dersler & Tuzaklar)
-
-Bu bölüm, geliştirme sırasında *acıyla* öğrenilen ve sağlamlığı belirleyen noktaları içerir:
-
-#align(center, table(
-  columns: (auto, 1.5fr),
-  inset: 7pt, align: (left, left),
-  stroke: 0.5pt + softln,
-  fill: (_, y) => if y == 0 { primary } else if calc.odd(y) { soft } else { white },
-  table.header(
-    text(fill: white, weight: "bold")[Tuzak],
-    text(fill: white, weight: "bold")[Ders / Çözüm],
-  ),
-  [7B çökmesi], [8GB'de 7B çalıştırma; yerel = 3B, ağır = GPU. Fallback'i 3B yap ki env unutulsa çökmesin.],
-  [Türkçe locale], [DB'de `lower('Ç')='Ç'` (katlamıyor) → `ILIKE/~*` çöküyor. Çözüm: `lower(unaccent(col))` (unaccent önce). "kola" ≠ "çikolata", "çay" = "Çay".],
-  [Decimal bug], [PostgreSQL `NUMERIC` → pandas onu metin sanıyor + JSON bozuyor. `float`'a çevir.],
-  [Auto-learning zehiri], [Çalışan-ama-yanlış SQL'i few-shot'a kaydetmek modeli kirletir. Otomatik öğrenmeyi *kapat*; yalnızca doğrulanmış örneklerle besle.],
-  [Pay non-additive], [LIMIT'li sonuçta "toplam içinde %" yanlış payda alır. Gerçek toplamı ayrı çek; çekemezsen bastır + çekince (K3).],
-  [Değer linkleme], [Model "Temizlik"in kategori değeri olduğunu bilmiyordu → şemaya gerçek değerleri enjekte et (kategori/şehir/marka).],
-  [Guard Türkçe-ek tuzağı], [`\bmüşteri\b` "müşterimiz"i kaçırır. Kelime-başı + ek eşleşmesine geç; çakışan kısa kökleri (kar) temizle.],
-  [3B'de prompt şişmesi], [Küçük modele fazla talimat (ör. büyük terim sözlüğü) *geri teper* — başka soruları bozar. Az ama öz prompt.],
-  [Execution-match kırılganlığı], [Kolon adı/sayısı farkı doğru cevabı yanlış sayabilir. Değer-temelli karşılaştır; kendi gold set'ini *çift kontrol* et.],
-))
-
-= 11. Nasıl Kurulur ve Çalıştırılır
-
-== Gereksinimler
-- Python 3.11+ · PostgreSQL · #link("https://ollama.com")[Ollama] (yerel model çalıştırıcı)
-- \~2 GB boş disk (3B model) + \~2 GB RAM serbest
-
-== Adım adım
-```bash
-# 1) Repoyu klonla
-git clone <repo-linki> && cd Local-sirket-sorgu
-
-# 2) Sanal ortam + bağımlılıklar
-python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-
-# 3) Yerel modeli indir (Ollama açık olmalı)
-ollama pull qwen2.5-coder:3b
-
-# 4) Demo veritabanını kur
-createdb sirket_demo
-export DATABASE_URL="postgresql://<kullanici>@localhost:5432/sirket_demo"
-.venv/bin/python demo_veri.py        # sentetik perakende verisi (6511 satış)
-
-# 5) Soru sor (etkileşimli)
-.venv/bin/python sor.py
-#   → "en çok ciro yapan 5 ürün hangisi?"  yaz, Enter
-```
-
-#kutu("Üretimde dikkat", renk: warn)[
-  - Uygulama, *salt-okunur* bir DB kullanıcısı kullanmalı (`SORGU_DATABASE_URL`). Yazma yetkisi yalnızca veri kurulumunda.
-  - 8GB makinede: `launchctl setenv OLLAMA_MAX_LOADED_MODELS 1` ile aynı anda tek model yüklenir (çökme önlenir).
-  - Gerçek şirket verisi *kullanma* — demo sentetiktir; kendi şemanı bağlarken `.env` ve read-only kullanıcı kur.
+#kutu("3B'nin dürüst sınırı", renk: warn)[
+  3B; pencere fonksiyonu, grup-başına-top-N, percentile gibi *ileri analitiği* dizüstüde tek başına çözemez (kavramsal sınır). Bu sorular için sunucuda 7B/32B devreye girer. "Küçükle başla, gerektiğinde büyüt" stratejisi.
 ]
+
+= 11. Yerel (Local) Çalışmanın Avantajları
+
+#grid(columns: (1fr, 1fr), gutter: 12pt,
+  kutu("Gizlilik & uyum", renk: accent)[
+    Veri, şema ve sorular makineden *hiç çıkmaz.* KVKK/GDPR hassas kurumlar için pazarlıksız avantaj.
+  ],
+  kutu("Sıfır API maliyeti", renk: accent)[
+    Token başına ücret yok. Sorgu sayısı arttıkça maliyet *artmaz.* Bulut API'de her sorgu para demektir.
+  ],
+  kutu("Bağımsızlık", renk: accent)[
+    İnternet kesintisi, API kotası, fiyat değişikliği *etkilemez.* Sistem tamamen sizin kontrolünüzde.
+  ],
+  kutu("Öngörülebilirlik", renk: accent)[
+    Sabit donanımda *tutarlı* gecikme; dış servis yavaşlaması yok.
+  ],
+)
 
 = 12. Doğruluk Kanıtı ve Test
 
-Proje "çalışıyor" demekle yetinmez; *ölçer.* Dört bağımsız test ekseni:
+Sistem "çalışıyor" demekle yetinmez; *ölçer.* Dört bağımsız test ekseni:
 
 #align(center, table(
   columns: (auto, 1.4fr, auto),
@@ -446,44 +495,75 @@ Proje "çalışıyor" demekle yetinmez; *ölçer.* Dört bağımsız test ekseni
     text(fill: white, weight: "bold")[Sonuç],
   ),
   [`test_guvenlik.py`], [Yazma/injection reddi (K1)], [15/15],
-  [`sql_kontrol` grounding], [Uydurma kolon/tablo reddi (K2)], [10/10],
-  [`gold_set.py`], [Uçtan uca execution accuracy], [7/8 (%87.5)],
+  [`test_kontrol.py`], [Uydurma kolon/tablo reddi (K2)], [10/10],
+  [`gold_set.py`], [Uçtan uca execution accuracy], [7/8 (\~%87)],
   [`metrik_test.py`], [Türetilmiş metrik doğruluğu (K3)], [3/3],
 ))
 
 #kutu("Kontrol katmanlarının kanıtı")[
-  K3 olmasaydı sistem "Bal, toplam ciro içinde %25.1" derdi (yanlış — sadece 5 satırın toplamı). K3 sayesinde *doğru* cevap: "%10.7" (gerçek toplam 1.646.768 ayrı çekilerek). Bu fark, mühendisliğin doğruluğa katkısının somut kanıtıdır.
+  K3 olmasaydı sistem "Dana Kuşbaşı, toplam ciro içinde %25.0" derdi (yanlış — sadece 5 satırın toplamı). K3 sayesinde *doğru* cevap: "%4.1" (gerçek toplam 66.181.361 ayrı çekilerek). Bu fark, mühendisliğin doğruluğa katkısının somut kanıtıdır.
 ]
 
-= 13. Yol Haritası
+= 13. Nasıl Kurulur ve Çalıştırılır
+
+== Gereksinimler
+- Python 3.11+ · PostgreSQL · #link("https://ollama.com")[Ollama] (yerel model çalıştırıcı)
+
+== Adım adım
+```bash
+# 1) Repoyu klonla
+git clone https://github.com/Harungokc/local-text-to-sql.git && cd local-text-to-sql
+
+# 2) Sanal ortam + bağımlılıklar
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+
+# 3) Yerel modeli indir (Ollama açık olmalı)
+ollama pull qwen2.5-coder:3b
+
+# 4) Demo veritabanını kur
+createdb sirket_demo
+export DATABASE_URL="postgresql://$USER@localhost:5432/sirket_demo"
+.venv/bin/python demo_veri.py
+
+# 5) Few-shot örneklerini yükle
+export SORGU_DATABASE_URL="postgresql://$USER@localhost:5432/sirket_demo"
+.venv/bin/python seed_sema.py
+
+# 6) Web arayüzünü başlat → tarayıcıda http://127.0.0.1:9000
+.venv/bin/python -m uvicorn api:app --port 9000
+```
+
+#kutu("Üretimde dikkat", renk: warn)[
+  Uygulama *salt-okunur* bir DB kullanıcısı kullanmalı. Gerçek şirket verisiyle kurulum, doğru izinler ve güvenli ağ ayarlarını içerir — bu kurulumu sizin için biz yapıyoruz.
+]
+
+= 14. Yol Haritası
 
 #grid(columns: (1fr, 1fr), gutter: 12pt,
-  kutu("Faz 3 — Doğruluk derinliği", renk: primary)[
-    - Koşullu *LLM-critic* (clause-bazlı anlam denetimi)
-    - *Güven skoru* (iki-aday uyuşmazlığı → "emin değilim")
-    - *Intent-based retrieval* (Pinterest): geçmiş SQL'leri doğal dile çevirip RAG'e koy
-    - *Kolon budama* (Uber): büyük şemada context daraltma
+  kutu("Tamamlanan", renk: accent)[
+    - Uçtan uca pipeline + 5 kontrol katmanı
+    - Web arayüzü + REST API + terminal
+    - Dürüst doğruluk ölçümü (4 test ekseni)
+    - Açık kaynak repo + dokümanlar
   ],
-  kutu("Faz 4 — Ölçek & vitrin", renk: primary)[
-    - *Semantik metrik katmanı* (ciro, aktif kullanıcı… sabit, onaylı tanımlar)
-    - Kiralık GPU'da *32B* ile ileri analitik
-    - README + mimari diyagram + demo GIF
-    - Basit web arayüzü (tek sayfa)
+  kutu("Sıradaki (Faz 3–4)", renk: primary)[
+    - Koşullu LLM-critic + güven skoru ("emin değilim")
+    - Intent-based retrieval + kolon budama (büyük şema)
+    - Semantik metrik katmanı (sabit iş tanımları)
+    - Sunucuda 32B + grafik üretimi
   ],
 )
 
-= 14. Kapanış
+= 15. İletişim & Hizmet
 
-Bu proje, kurumsal text-to-SQL'in zor ve çözülmemiş bir problem olduğunu kabul ederek, ona *mühendislik disipliniyle* ve *veriyi hiç dışarı çıkarmadan* yaklaşır. Doğruluğu modelden değil; şema linkleme, RAG few-shot, çok-katmanlı kontrol, türetilmiş-metrik denetimi ve halüsinasyonsuz rapor *mimarisinden* alır.
+Bu sistem, kurumsal text-to-SQL'in zor bir problem olduğunu kabul ederek ona *mühendislikle* ve *veriyi hiç dışarı çıkarmadan* yaklaşır. Doğruluğu modelden değil; katmanlı kontrol, RAG few-shot ve halüsinasyonsuz rapor *mimarisinden* alır.
 
-Sonuç: 1.9 GB'lik bir model, bir dizüstünde, gündelik iş sorularını %87–95 doğrulukla, *dürüstçe ölçülmüş* ve *kontrol altına alınmış* biçimde yanıtlıyor — sınırlarını da açıkça belgeleyerek.
+*Sonuç:* dizüstünde bile çalışan, gündelik iş sorularını %87–95 doğrulukla yanıtlayan, sınırlarını dürüstçe belgeleyen bir asistan — ve gerektiğinde sunucuda büyük modele ölçeklenen bir mimari.
 
-#v(0.6cm)
-#kutu("Daha fazlası", renk: accent)[
-  *Kaynak kod:* #text(fill: warn)[‹GitHub-linki›]  ·  *Kurulum & demo videosu:* #text(fill: warn)[‹video-linki›]  ·  *İletişim / LinkedIn:* #text(fill: warn)[‹profil-linki›]
-]
+#v(0.5cm)
+#iletisim_blok
 
 #v(0.4cm)
 #align(center, text(size: 9pt, fill: rgb("#7a8a8c"))[
-  Bu doküman Typst ile üretildi. Kaynak: `docs/sirket_sorgu_tanitim.typ` — metni güncelleyip `typst compile` ile yeniden üretebilirsiniz.
+  Açık kaynak: #link(REPO_URL)[#REPO]  ·  Bu sistemi şirketinize biz kuralım.
 ])

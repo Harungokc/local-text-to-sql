@@ -38,7 +38,8 @@ DURUMLAR = [
         "sql": "SELECT m.sehir, SUM(s.toplam_tutar) AS toplam_ciro FROM satislar s "
                "JOIN magazalar m ON m.id=s.magaza_id GROUP BY m.sehir ORDER BY toplam_ciro DESC",
         "beklenen_sql": "SELECT ROUND(MAX(c)/SUM(c)*100, 1) FROM "
-                        "(SELECT SUM(toplam_tutar) c FROM satislar GROUP BY magaza_id) q",
+                        "(SELECT SUM(s.toplam_tutar) c FROM satislar s "
+                        "JOIN magazalar m ON m.id=s.magaza_id GROUP BY m.sehir) q",
         "beklenen_kaynak": "tam",
     },
     {
