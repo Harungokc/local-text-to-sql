@@ -8,6 +8,9 @@ grounding (uydurma tablo/kolon tespiti) test edilir.
 
 Çalıştırma:  python test_kontrol.py
 """
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "app"))
+
 from sql_kontrol import statik_dogrula
 
 # Örnek şema: { tablo: {kolonlar} }

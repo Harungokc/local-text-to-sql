@@ -23,7 +23,7 @@ import db_sorgu
 import runner
 from llm import LLM
 
-_WEB_DIZIN = os.path.join(os.path.dirname(__file__), "web")
+_WEB_DIZIN = os.path.join(os.path.dirname(__file__), "..", "web")
 
 # --- Loglama (fabrika konvansiyonu: UTF-8, dosya + konsol) ---
 os.makedirs("logs", exist_ok=True)

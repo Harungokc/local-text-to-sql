@@ -17,7 +17,7 @@ Bir şirketin kendi veritabanına **doğal Türkçe ile** soru sormasını sağl
 
 **Neden önemli?** Kurumsal text-to-SQL hâlâ çözülmemiş zor bir problemdir (Spider 2.0 benchmark'ında GPT-4o bile yalnızca ~%10). Bu projede soruna **mühendislik disipliniyle** ve **veriyi hiç dışarı çıkarmadan** yaklaşıldı.
 
-> 📄 Detaylı tasarım dokümanı: [`docs/sirket_sorgu_tanitim.pdf`](docs/sirket_sorgu_tanitim.pdf)
+> 📐 Tasarım & araştırma notları: [`docs/tasarim/`](docs/tasarim/) · DB yapısı: [`docs/sirket_demo_db_yapisi.xlsx`](docs/sirket_demo_db_yapisi.xlsx)
 
 ---
 
@@ -73,7 +73,7 @@ Türkçe Soru
 ### Kurulum
 ```bash
 # 1) Klonla
-git clone <repo-linki> && cd Local-sirket-sorgu
+git clone https://github.com/Harungokc/local-text-to-sql.git && cd local-text-to-sql
 
 # 2) Sanal ortam + bağımlılıklar
 python3 -m venv .venv
@@ -82,14 +82,14 @@ python3 -m venv .venv
 # 3) Yerel modeli indir (Ollama açık olmalı)
 ollama pull qwen2.5-coder:3b
 
-# 4) Demo veritabanını kur (sentetik perakende verisi, 6511 satış)
+# 4) Demo veritabanını kur (sentetik perakende verisi, ~280.000 satış)
 createdb sirket_demo
 export DATABASE_URL="postgresql://$USER@localhost:5432/sirket_demo"
-.venv/bin/python demo_veri.py
+.venv/bin/python scripts/demo_veri.py
 
 # 5) Few-shot örneklerini ChromaDB'ye yükle (gold/few_shot.json'dan)
 export SORGU_DATABASE_URL="postgresql://$USER@localhost:5432/sirket_demo"
-.venv/bin/python seed_sema.py
+.venv/bin/python scripts/seed_sema.py
 ```
 
 ### Çalıştırma
@@ -98,14 +98,14 @@ export SORGU_DATABASE_URL="postgresql://$USER@localhost:5432/sirket_demo"
 ```bash
 export SORGU_DATABASE_URL="postgresql://$USER@localhost:5432/sirket_demo"
 export YEREL_MODEL="qwen2.5-coder:3b"
-.venv/bin/python -m uvicorn api:app --host 127.0.0.1 --port 9000
+.venv/bin/python -m uvicorn api:app --app-dir app --host 127.0.0.1 --port 9000
 # → tarayıcıda http://127.0.0.1:9000
 ```
 
 **Terminal:**
 ```bash
-.venv/bin/python sor.py                                  # etkileşimli
-.venv/bin/python sor.py "en çok ciro yapan 5 ürün?"      # tek soru
+.venv/bin/python app/sor.py                                  # etkileşimli
+.venv/bin/python app/sor.py "en çok ciro yapan 5 ürün?"      # tek soru
 ```
 
 **REST API:**
@@ -163,29 +163,32 @@ PostgreSQL ile geliştirildi (güçlü izin modeli + `EXPLAIN` + yaygınlık). M
 | `EXPLAIN` dry-run | Çalıştırmadan şema/tip uyumunu doğrular |
 | Timeout + satır limiti | Kaçak sorgu koruması |
 
-Test: `python test_guvenlik.py` → **15/15**.
+Test: `python tests/test_guvenlik.py` → **15/15**.
 
 ---
 
 ## Proje Yapısı
 
 ```
-runner.py          Orkestratör (uçtan uca akış)
-sema.py            Şema okuma + linkleme + değer enjeksiyonu
-retrieval.py       Few-shot örnek deposu (ChromaDB, yerel)
-llm.py             Yerel LLM sarmalayıcı (OpenAI-uyumlu: Ollama/vLLM)
-sql_guvenlik.py    K1 — güvenlik (SELECT-only)
-sql_kontrol.py     K2 — doğruluk (grounding + EXPLAIN)
-analiz_kontrol.py  K3 — türetilmiş metrik denetimi + sadakat
-on_kontrol.py      K0 — eksik-kavram guard'ı
-rapor.py           Rapor (pandas hesaplar, LLM yorumlar)
-db_sorgu.py        Read-only PostgreSQL (asyncpg)
-api.py             FastAPI servisi + web arayüzü
-sor.py             Terminal CLI
-web/index.html     Tek-sayfa web arayüzü
-demo_veri.py       Sentetik demo veritabanı
-gold/              Gold set + few-shot örnekleri
-docs/              Tanıtım PDF'i (+ kaynak .typ)
+app/                 Uygulama kaynak kodu
+├── api.py           FastAPI servisi + web arayüzü
+├── sor.py           Terminal CLI
+├── runner.py        Orkestratör (uçtan uca akış)
+├── sema.py          Şema okuma + linkleme + değer enjeksiyonu
+├── retrieval.py     Few-shot örnek deposu (ChromaDB, yerel)
+├── llm.py           Yerel LLM sarmalayıcı (OpenAI-uyumlu: Ollama/vLLM)
+├── rapor.py         Rapor (pandas hesaplar, LLM yorumlar)
+├── db_sorgu.py      Read-only PostgreSQL (asyncpg)
+├── on_kontrol.py    K0 — eksik-kavram guard'ı
+├── sql_guvenlik.py  K1 — güvenlik (SELECT-only)
+├── sql_kontrol.py   K2 — doğruluk (grounding + EXPLAIN)
+├── analiz_kontrol.py K3 — türetilmiş metrik denetimi + sadakat
+└── prompts/         LLM prompt şablonları
+scripts/             Kurulum scriptleri (demo_veri.py, seed_sema.py)
+tests/               Testler + doğruluk ölçümü (gold_set, metrik_test)
+gold/                Gold set + few-shot örnekleri
+web/                 Tek-sayfa web arayüzü
+docs/                Dokümantasyon (tasarim/ notları, DB yapısı, ekran görüntüsü)
 ```
 
 ---
@@ -193,9 +196,10 @@ docs/              Tanıtım PDF'i (+ kaynak .typ)
 ## Test & Doğruluk Kanıtı
 
 ```bash
-python test_guvenlik.py     # güvenlik (K1)         → 15/15
-python gold_set.py          # execution accuracy    → 7/8
-python metrik_test.py       # türetilmiş metrik (K3) → 3/3
+python tests/test_guvenlik.py   # güvenlik (K1)          → 15/15
+python tests/test_kontrol.py    # grounding (K2)         → 10/10
+python tests/gold_set.py        # execution accuracy     → ~%87
+python tests/metrik_test.py     # türetilmiş metrik (K3) → 3/3
 ```
 
 ---

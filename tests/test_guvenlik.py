@@ -7,6 +7,9 @@ geçerli SELECT'lerin geçtiğini ve LIMIT'in zorlandığını doğrular.
 
 Çalıştırma:  python test_guvenlik.py
 """
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "app"))
+
 from sql_guvenlik import GuvenlikHatasi, dogrula_ve_hazirla
 
 # (sql, gecmeli_mi) çiftleri

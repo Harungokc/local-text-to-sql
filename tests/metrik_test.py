@@ -15,6 +15,8 @@ OLMASAYDI üretilecek naif (yanlış) payı da gösterir.
   .venv/bin/python metrik_test.py
 """
 import asyncio
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "app"))
 
 import db_sorgu
 import rapor
