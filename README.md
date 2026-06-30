@@ -36,7 +36,7 @@ Bir şirketin kendi veritabanına **doğal Türkçe ile** soru sormasını sağl
 
 `web/` arayüzünde soru sor, anında SQL + sonuç tablosu + özet + Excel/CSV indir:
 
-> _(Ekran görüntüsünü buraya ekleyin: `docs/ekran_goruntusu.png`)_
+![Şirket Sorgu web arayüzü](docs/ekran_goruntusu.png)
 
 ---
 
